@@ -21,12 +21,11 @@ setInterval(() => {
 }, 10000);
 
 app.post('/heartbeat', (req, res) => {
-  const playerCount = req.body.player_count || 1;
-  const playerId = req.ip || `anon-${Math.random()}`;
+  const playerId = req.headers['x-player-id'] || req.ip || `anon-${Math.random()}`;
 
   activePlayers.set(playerId, Date.now());
 
-  console.log(`Heartbeat from ${playerId} (count: ${playerCount}). Total active: ${activePlayers.size}`);
+  console.log(`Heartbeat from ${playerId}. Total active: ${activePlayers.size}`);
 
   res.json({ success: true, count: activePlayers.size });
 });
