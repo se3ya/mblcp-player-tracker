@@ -21,9 +21,13 @@ setInterval(() => {
 }, 10000);
 
 app.post('/heartbeat', (req, res) => {
-  const playerId = req.headers['x-player-id'] || req.ip || `anon-${Math.random()}`;
+  const playerCount = req.body.player_count || 1;
+  const playerId = req.ip || `anon-${Math.random()}`;
+
   activePlayers.set(playerId, Date.now());
-  console.log(`Heartbeat from ${playerId}. Total active: ${activePlayers.size}`);
+
+  console.log(`Heartbeat from ${playerId} (count: ${playerCount}). Total active: ${activePlayers.size}`);
+
   res.json({ success: true, count: activePlayers.size });
 });
 
@@ -47,7 +51,7 @@ app.get('/', (req, res) => {
   res.json({ status: 'running', activePlayers: activePlayers.size });
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
